@@ -4,7 +4,6 @@ var quiz_title          = document.getElementById('quiz-title');
 var quiz_description    = document.getElementById('quiz-description');
 var question_numbering  = document.getElementById('question-numbering');
 var question_container  = document.getElementById('question-container');
-var answers_div         = document.createElement('div')
 
 let questions, index;
 
@@ -47,42 +46,55 @@ function fetchData() {
 // create DOM elements for the question
 function displayQuestion() {
     // Create necessary elements 
-    let cur_question = questions[index];
     let q_title = document.createElement("h2");
     let q_img = document.createElement("img")
     // Declare value of elements
+    let cur_question = questions[index];
     question_numbering.innerText = `Question #${cur_question.q_id} out of ${questions.length}`
     q_title.innerText = cur_question.title;
     q_img.src = cur_question.img;
-    createPossibleAnswers(cur_question);
+    let ans_div = createPossibleAnswers(cur_question);
 
     // Append elements on DOM
     question_container.appendChild(q_title);
-    question_container.appendChild(q_img);
-    question_container.appendChild(answers_div);    
+    // question_container.appendChild(q_img);
+    question_container.appendChild(ans_div);    
 }
 
+// TODO: {possible_ansers and question type out of question}
 function createPossibleAnswers(question) {
-    let poss_answers = question.possible_answers
-    console.log('Create ', question.question_type);
+    let possible_answers = question.possible_answers;
+    let ans_type_div;
     switch(question.question_type) {
         case 'truefalse':
-            trueFalse();
+            ans_type_div = trueFalse();
             break;
         case 'mutiplechoice-single':
-            console.log('in case');
-            multipleChoiceSingle(poss_answers);
+            ans_type_div = multipleChoiceSingle(possible_answers);
             break;
         case 'mutiplechoice-multiple':
-            multipleChoiceMultiple(poss_answers);
+            ans_type_div = multipleChoiceMultiple(possible_answers);
             break;
     }
+    return ans_type_div;
 }
 
-function multipleChoiceSingle(poss_answers) {
+function multipleChoiceSingle(possible_answers) {
 
     let multipleChoiceSingle_div = document.createElement('div');
-    multipleChoiceSingle_div.innerHTML = '<h1>TEST</h1>';
-    answers_div.appendChild(multipleChoiceSingle_div)
+    possible_answers.forEach(poss_ans => {
+        console.log(poss_ans.a_id, poss_ans.caption );
+        let ans_el = document.createElement('button');
+        ans_el.innerText = poss_ans.caption;
+        ans_el.id = poss_ans.a_id;
+        ans_el.addEventListener('click', chooseAnswer);
+        multipleChoiceSingle_div.appendChild(ans_el);
+        
+    });
+    return multipleChoiceSingle_div;
 
+}
+
+function chooseAnswer($event) {
+    console.log('clicked ', $event.srcElement.id);
 }
