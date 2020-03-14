@@ -48,6 +48,7 @@ function displayQuestion() {
     // Create necessary elements 
     let q_title = document.createElement("h2");
     let q_img = document.createElement("img")
+    let ans_form = document.createElement("form")
     // Declare value of elements
     let cur_question = questions[index];
     question_numbering.innerText = `Question #${cur_question.q_id} out of ${questions.length}`
@@ -82,16 +83,31 @@ function createPossibleAnswers(question) {
 function multipleChoiceSingle(possible_answers) {
 
     let multipleChoiceSingle_div = document.createElement('div');
+    let ans_el = ``
     possible_answers.forEach(poss_ans => {
         console.log(poss_ans.a_id, poss_ans.caption );
-        let ans_el = document.createElement('button');
-        ans_el.innerText = poss_ans.caption;
-        ans_el.id = poss_ans.a_id;
-        ans_el.addEventListener('click', chooseAnswer);
-        multipleChoiceSingle_div.appendChild(ans_el);
+        ans_el += `<input type="radio" name="possible_answers" id="${poss_ans.a_id}" value="${poss_ans.caption}">`
+        ans_el += `<label for="${poss_ans.a_id}">${poss_ans.caption}</label>`
+        multipleChoiceSingle_div.innerHTML = ans_el;
         
     });
+    let submit_btn = document.createElement('button');
+    submit_btn.addEventListener('click', submitAnswer);
+    submit_btn.innerText = 'Submit';
+    multipleChoiceSingle_div.appendChild(submit_btn);
     return multipleChoiceSingle_div;
+
+}
+
+function submitAnswer($event) {
+    // Get checked value from possible answers
+    const checked = document.querySelector('input[name="possible_answers"]:checked')
+    console.log('okay: ', checked.value);
+    // handle it in case of null value
+
+    // handle it in case of correct answer
+
+    // handle it in case of wrong answer
 
 }
 
