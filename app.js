@@ -6,13 +6,13 @@ var question_numbering  = document.getElementById('question-numbering');
 var question_container  = document.getElementById('question-container');
 var result_container    = document.getElementById('result-container');
 
-let questions, index, quiz_id;
-let points = 0;
+let questions, index, quiz_id, my_results;
+let total_points = 0 , points = 0;
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 
 function startQuiz() {
-    fetchData().then(() => {
+    fetchData().then(questions => {
         index = 0; // TODO: index = 0
         displayQuestion();
     })
@@ -21,6 +21,7 @@ function startQuiz() {
     });
 
     fetchResult().then((results) => {
+        my_results = results;
         console.log("RESULTS: ", results);
     });
 }
@@ -33,7 +34,6 @@ function fetchResult() {
         request.onload = function() {
             fetched_data = JSON.parse(request.responseText);
             if (fetched_data.quiz_id == quiz_id) {
-                questions = fetched_data;
                 resolve(fetched_data.results);
             } else {
                 reject();
@@ -59,6 +59,8 @@ function fetchData() {
             quiz_description.innerText = fetched_data.description;
             questions = fetched_data.questions;
             quiz_id = fetched_data.quiz_id;
+
+            console.log(questions);
             resolve(questions);
         }
     
@@ -80,6 +82,8 @@ function displayQuestion() {
         question_numbering.innerText = `Question #${cur_question.q_id} out of ${questions.length}`
         q_title.innerText = cur_question.title;
         q_img.src = cur_question.img;
+        total_points += parseInt(cur_question.points);
+        console.log(total_points);
         
         let ans_div = createPossibleAnswers(cur_question);
 
@@ -222,18 +226,25 @@ function calculatePoints(checked_answers, actual_answers) {
 }
 
 function showResults() {
-    result_container
+    let r_score = document.createElement("h2");
     let r_title = document.createElement("h2");
     let r_img = document.createElement("img")
     let r_msg = document.createElement("p");
+    let percentage = (points * 100) / total_points;
 
-    r_title.innerText = "Good job! POINTS: " + points;
+    let cur_result = my_results.find( r => {
+        return percentage >= r.minpoints && percentage <= r.maxpoints
+    })
 
-
+    r_score.innerText = `Score: ${percentage} / 100`;
+    r_title.innerText = cur_result.title;
+    r_msg.innerText = cur_result.message;
+    r_img.src = cur_result.img
     
     // Append elements on DOM
-    question_container.appendChild(r_title);
-    question_container.appendChild(r_img);
-    question_container.appendChild(r_msg); 
+    result_container.appendChild(r_score);
+    result_container.appendChild(r_title);
+    result_container.appendChild(r_img);
+    result_container.appendChild(r_msg); 
 
 }
