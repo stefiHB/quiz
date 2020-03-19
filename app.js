@@ -77,13 +77,15 @@ function displayQuestion() {
     } else {
         let q_title = document.createElement("h2");
         let q_img = document.createElement("img")
+        let q_form = document.createElement("form");
         let cur_question = questions[index];
 
         question_numbering.innerText = `Question #${cur_question.q_id} out of ${questions.length}`
         q_title.innerText = cur_question.title;
         q_img.src = cur_question.img;
         total_points += parseInt(cur_question.points);
-        console.log(total_points);
+        
+        // q_form.onsubmit = validateForm();
         
         let ans_div = createPossibleAnswers(cur_question);
 
@@ -116,15 +118,19 @@ function trueFalse() {
     console.log(questions[index]);
     let truefalse_div = document.createElement('div');
     let ans_el = ``
-    ans_el += `<input type="radio" name="possible_answers" id="true" value="true">`
+    ans_el += `<input type="radio" name="possible_answers"
+                id="true" value="true" onclick="validate_click()">`
     ans_el += `<label for="true">True</label>`
-    ans_el += `<input type="radio" name="possible_answers" id="false" value="false">`
+    ans_el += `<input type="radio" name="possible_answers"
+                id="false" value="false" onclick="validate_click()">`
     ans_el += `<label for="false">False</label>`
     truefalse_div.innerHTML = ans_el;
 
     let submit_btn = document.createElement('button');
     submit_btn.addEventListener('click', submitAnswer);
     submit_btn.innerText = 'Submit';
+    submit_btn.disabled = true;
+    submit_btn.classList.add('submit-btn');
     truefalse_div.appendChild(submit_btn);
     return truefalse_div;
 }
@@ -134,13 +140,18 @@ function multipleChoice(possible_answers) {
     let multipleChoice_div = document.createElement('div');
     let ans_el = ``
     possible_answers.forEach(poss_ans => {
-        ans_el += `<input type="radio" name="possible_answers" id="${poss_ans.a_id}" value="${poss_ans.caption}">`
+        ans_el += `<input type="radio" name="possible_answers"
+                    id="${poss_ans.a_id}" value="${poss_ans.caption}"
+                    onclick="validate_click()">`
         ans_el += `<label for="${poss_ans.a_id}">${poss_ans.caption}</label>`
         multipleChoice_div.innerHTML = ans_el;
     });
     let submit_btn = document.createElement('button');
     submit_btn.addEventListener('click', submitAnswer);
     submit_btn.innerText = 'Submit';
+    submit_btn.disabled = true;
+    submit_btn.classList.add('submit-btn');
+
     multipleChoice_div.appendChild(submit_btn);
     return multipleChoice_div;
 }
@@ -150,19 +161,24 @@ function multipleChoiceMany(possible_answers) {
     let multipleChoiceMany_div = document.createElement('div');
     let ans_el = ``
     possible_answers.forEach(poss_ans => {
-        ans_el += `<input type="checkbox" name="possible_answers" id="${poss_ans.a_id}" value="${poss_ans.caption}">`
+        ans_el += `<input type="checkbox" name="possible_answers"
+                    id="${poss_ans.a_id}" value="${poss_ans.caption}"
+                    onclick="validate_click()">`
         ans_el += `<label for="${poss_ans.a_id}">${poss_ans.caption}</label>`
         multipleChoiceMany_div.innerHTML = ans_el;
     });
     let submit_btn = document.createElement('button');
     submit_btn.addEventListener('click', submitAnswer);
     submit_btn.innerText = 'Submit';
+    submit_btn.disabled = true;
+    submit_btn.classList.add('submit-btn');
     multipleChoiceMany_div.appendChild(submit_btn);
     return multipleChoiceMany_div;
 }
 
 
 function submitAnswer($event) {
+    const btn = document.querySelector('button[class="submit-btn"]').disabled = true;
     const cur_question = questions[index];    
     let actual_asnwers = []         // ID of correct answers
     let selected_answers = []       // ID of selected answers from user
@@ -181,6 +197,11 @@ function submitAnswer($event) {
             checked_answers.forEach(ans => selected_answers.push(parseInt(ans.id)));
             actual_asnwers = cur_question.correct_answer;
             break;
+    }
+
+    if(actual_asnwers.length <= 0) {
+        alert("Please select an answer");
+        return;
     }
     points += calculatePoints(selected_answers, actual_asnwers);
 
@@ -202,8 +223,6 @@ function submitAnswer($event) {
         question_container.innerHTML = '';          // Reset Question
         displayQuestion();                          // Display next Question
     }, 3000);
-
-
 }
 
 function calculatePoints(checked_answers, actual_answers) {
@@ -246,5 +265,16 @@ function showResults() {
     result_container.appendChild(r_title);
     result_container.appendChild(r_img);
     result_container.appendChild(r_msg); 
+}
+
+function validate_click() {
+    const btn = document.querySelector('button[class="submit-btn"]');
+    console.log('patisa', btn);
+    let isCheckedValues = document.querySelector('input[name="possible_answers"]:checked');
+    if (isCheckedValues) {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
 
 }
