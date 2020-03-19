@@ -8,6 +8,6 @@ http://proto.io/en/jobs/candidate-questions/result.json
 
 The deadline for submitting the quiz is in two weeks from today.
 
-NOTES WHILE CODING:
+NOTES BY STEPHANIE WHILE CODING:
 1. I didnt like my naming of variables. Mostly had problem with the all the elements that had to do with possible answers.
 2. Too many functions and code in one .js file.
