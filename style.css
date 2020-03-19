@@ -1,6 +1,8 @@
 body {
     background-color: #252033;
     color: white;
+    font-family: "frosty";
+    margin: 0px
 }
 
 .wrong_answer {
@@ -15,11 +17,56 @@ body {
     background-color: #e61212;
 }
 
-img {
-    height: 200px;
+.selected_answer {
+    border: 2px solid #159dd3;
 }
 
-#submit-btn {
+img {
+    height: 200px;
+    padding: 10px;
+}
+
+.submit-btn {
     display: block;
-    background-color: aqua;
+    background-color: rgb(113, 82, 150);
+    color: white;
+    width: 100px;
+    height: 30px;
+    margin-left: 150px;
+    margin-top: 20px;
+}
+
+
+
+#quiz-container #quiz-title{
+    padding: 20px;
+    margin: 0px;
+    font-size: 30px;
+    background-color: rgba(126, 64, 64, 0.205);
+}
+
+#quiz-container #quiz-description{
+    padding: 5px;
+    margin: 10px;
+}
+
+#quiz-container #question-numbering{
+    padding: 5px;
+    margin: 10px;
+}
+
+
+#question-container {
+    margin: 40px 70px;
+}
+
+#question-container label{
+    padding-left: 4px;
+    padding-right: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#result-container {
+    margin: 70px;
 }

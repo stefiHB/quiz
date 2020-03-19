@@ -11,20 +11,26 @@ let total_points = 0 , points = 0;
 
 function startQuiz() {
     fetchData().then(questions => {
-        index = 0; // TODO: index = 0
+        index = 0;
         displayQuestion();
     })
     .catch(err => {
         console.log('Error: ', err);
+        quiz_title.innerText = "There was a problem connecting to server";
+
     });
 
     fetchResult().then((results) => {
         my_results = results;
-        console.log("RESULTS: ", results);
+    })
+    .catch(err => {
+        console.log("Error: ", err);
+        quiz_title.innerText = "There was a problem connecting to server";
     });
 }
-
-
+/*
+A Promise that fetches result score from server
+*/
 function fetchResult() {
     return new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
@@ -42,7 +48,7 @@ function fetchResult() {
     })
 }
 /*
-A Promise that fetches data from server
+A Promise that fetches questions from server
 */
 function fetchData() {
     return new Promise(function(resolve, reject) {
@@ -56,8 +62,6 @@ function fetchData() {
             quiz_description.innerText = fetched_data.description;
             questions = fetched_data.questions;
             quiz_id = fetched_data.quiz_id;
-
-            console.log(questions);
             resolve(questions);
         }
     
@@ -90,7 +94,6 @@ function displayQuestion() {
     }
 }
 
-// TODO: {possible_ansers and question type out of question}
 function createPossibleAnswers(question) {
     let possible_answers = question.possible_answers;
     let ans_type_div;
@@ -109,7 +112,6 @@ function createPossibleAnswers(question) {
 }
 
 function trueFalse() {
-    console.log(questions[index]);
     let truefalse_div = document.createElement('div');
     let ans_el = ``
     ans_el += `<input type="radio" name="possible_answers"
@@ -130,13 +132,12 @@ function trueFalse() {
 }
 
 function multipleChoice(possible_answers) {
-
     let multipleChoice_div = document.createElement('div');
     let ans_el = ``
     possible_answers.forEach(poss_ans => {
         ans_el += `<input type="radio" name="possible_answers"
                     id="${poss_ans.a_id}" value="${poss_ans.caption}"
-                    onclick="validate_click()">`
+                    onclick="validate_click(this)">`
         ans_el += `<label for="${poss_ans.a_id}">${poss_ans.caption}</label>`
         multipleChoice_div.innerHTML = ans_el;
     });
@@ -169,7 +170,6 @@ function multipleChoiceMany(possible_answers) {
     multipleChoiceMany_div.appendChild(submit_btn);
     return multipleChoiceMany_div;
 }
-
 
 function submitAnswer($event) {
     const btn = document.querySelector('button[class="submit-btn"]').disabled = true;
@@ -245,6 +245,8 @@ function showResults() {
     let r_msg = document.createElement("p");
     let percentage = (points * 100) / total_points;
 
+    console.log(points);
+
     let cur_result = my_results.find( r => {
         return percentage >= r.minpoints && percentage <= r.maxpoints
     })
@@ -260,15 +262,26 @@ function showResults() {
     result_container.appendChild(r_msg); 
 }
 
-function validate_click() {
+function validate_click(event) {
+
     const btn = document.querySelector('button[class="submit-btn"]');
-    let isCheckedValues = document.querySelector('input[name="possible_answers"]:checked');
-    if (isCheckedValues) {
+    const possible_answers = document.querySelectorAll('input[name="possible_answers"]');
+    let isCheckValue = false;
+
+    possible_answers.forEach(ans => {
+        if (ans.checked) {
+            isCheckValue = true;
+            document.querySelector(`label[for="${ans.id}"]`).classList.add("selected_answer");
+        } else {
+            document.querySelector(`label[for="${ans.id}"]`).classList.remove("selected_answer");
+        }
+    })
+    
+    if (isCheckValue) {
         btn.disabled = false;
     } else {
         btn.disabled = true;
     }
-
 }
 
 startQuiz()
