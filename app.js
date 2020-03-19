@@ -9,8 +9,6 @@ var result_container    = document.getElementById('result-container');
 let questions, index, quiz_id, my_results;
 let total_points = 0 , points = 0;
 
-document.getElementById('start-btn').addEventListener('click', startQuiz);
-
 function startQuiz() {
     fetchData().then(questions => {
         index = 0; // TODO: index = 0
@@ -51,7 +49,6 @@ function fetchData() {
         let request = new XMLHttpRequest();
         request.open('GET', 'https://proto.io/en/jobs/candidate-questions/quiz.json');
         request.onload = function() {
-            document.getElementById('start-container').style.display = "none";
             fetched_data = JSON.parse(request.responseText);
 
             // Initialize the quiz container
