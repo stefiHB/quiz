@@ -1,0 +1,20 @@
+body {
+    background-color: #252033;
+    color: white;
+}
+
+.wrong_answer {
+    background-color: #e61212;
+}
+
+.actual_answer {
+    background-color: #25d315;
+}
+
+.partly_correct_answer {
+    background-color: #e61212;
+}
+
+img {
+    height: 200px;
+}
