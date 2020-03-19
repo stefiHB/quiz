@@ -77,19 +77,16 @@ function displayQuestion() {
     } else {
         let q_title = document.createElement("h2");
         let q_img = document.createElement("img")
-        let q_form = document.createElement("form");
         let cur_question = questions[index];
 
         question_numbering.innerText = `Question #${cur_question.q_id} out of ${questions.length}`
         q_title.innerText = cur_question.title;
         q_img.src = cur_question.img;
         total_points += parseInt(cur_question.points);
-        
-        // q_form.onsubmit = validateForm();
-        
+                
         let ans_div = createPossibleAnswers(cur_question);
 
-        // Append elements on DOM
+        // Append question elements on DOM
         question_container.appendChild(q_title);
         question_container.appendChild(q_img);
         question_container.appendChild(ans_div);    
@@ -254,7 +251,6 @@ function showResults() {
     let cur_result = my_results.find( r => {
         return percentage >= r.minpoints && percentage <= r.maxpoints
     })
-
     r_score.innerText = `Score: ${percentage} / 100`;
     r_title.innerText = cur_result.title;
     r_msg.innerText = cur_result.message;
@@ -269,7 +265,6 @@ function showResults() {
 
 function validate_click() {
     const btn = document.querySelector('button[class="submit-btn"]');
-    console.log('patisa', btn);
     let isCheckedValues = document.querySelector('input[name="possible_answers"]:checked');
     if (isCheckedValues) {
         btn.disabled = false;
@@ -278,3 +273,5 @@ function validate_click() {
     }
 
 }
+
+startQuiz()
